@@ -34,8 +34,8 @@ ParameterListDecl = ')' | Type ')' | Type ',' ParameterList
 
 VariableDeclaration = 'var' Identifier '=' Expression
 
-FunctionCall = Identifier '(' ParameterListExpr
-ParameterListExpr = ')' | Expression ')' | Expression ',' ParameterListExpr | 
+FunctionCall = Identifier '(' ( ')' | ParameterListExpr )
+ParameterListExpr = Expression ( ')' | ',' ParameterListExpr)
 
 // Need to inline the '(' peek in FunctionCall I think
 Tier0 = Literal | FunctionCall | Identifier | Expression
