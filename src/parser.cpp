@@ -61,6 +61,8 @@ Operators:
 
 #include <regex>
 
+namespace {
+
 static const std::regex token_re(
 	"\\s*(?:(class)|(def)|(var)|([a-zA-Z_]+[a-zA-Z_0-9]*)|(->)|"
 	"([0-9]+\\.[0-9]*|\\.[0-9]+)|([0-9]+)|'(.)'|\"(.*)\"|"
@@ -76,3 +78,5 @@ enum TokenTypes {
 	T_AND, T_OR, T_SEMICOLON, T_LPAREN, T_RPAREN,
 	T_COMMA, T_EQUAL, T_NOT, T_PLUS, T_MINUS, T_MUL, T_DIV, T_MODULO
 };
+
+} // namespace
