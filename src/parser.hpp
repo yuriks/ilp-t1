@@ -30,7 +30,7 @@ enum ExpressionType {
 };
 
 enum LiteralType {
-	LIT_FLOAT, LIT_INT, LIT_CHAR, LIT_STRING
+	LIT_FLOAT, LIT_INT, LIT_CHAR, LIT_STRING, LIT_BOOL
 };
 
 struct ExpressionNode {
