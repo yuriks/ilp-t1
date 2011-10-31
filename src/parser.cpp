@@ -62,7 +62,8 @@ Operators:
 #include <regex>
 
 static const std::regex token_re(
-	"\\s*(?:(class)|(def)|(var)|([a-zA-Z_]+)|(->)|"
+	"\\s*(?:(class)|(def)|(var)|([a-zA-Z_]+[a-zA-Z_0-9]*)|(->)|"
+	"([0-9]+\\.[0-9]*|\\.[0-9]+)|([0-9]+)|'(.)'|\"(.*)\"|"
 	"(<)|(<=)|(>)|(>=)|(==)|(!=)|"
 	"(&&)|(\\|\\|)|(;)|(\\()|(\\))|"
 	"(,)|(=)|(!)|(+)|(-)|(*)|(/)|(%)", std::regex::ECMAScript | std::regex::optimize);
@@ -70,6 +71,7 @@ static const std::regex token_re(
 enum TokenTypes {
 	T_NONE = 0,
 	T_CLASS, T_DEF, T_VAR, T_IDENTIFIER, T_ARROW,
+	T_FLOAT_LIT, T_INTEGER_LIT, T_CHAR_LIT, T_STRING_LIT,
 	T_LT, T_LE, T_GT, T_GE, T_EQ, T_NE,
 	T_AND, T_OR, T_SEMICOLON, T_LPAREN, T_RPAREN,
 	T_COMMA, T_EQUAL, T_NOT, T_PLUS, T_MINUS, T_MUL, T_DIV, T_MODULO
