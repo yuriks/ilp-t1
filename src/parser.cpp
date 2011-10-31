@@ -59,6 +59,8 @@ Operators:
 7 ||
 */
 
+#include "parser.hpp"
+
 #include <regex>
 
 namespace {
