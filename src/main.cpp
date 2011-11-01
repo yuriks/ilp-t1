@@ -19,7 +19,7 @@ int main()
     int int_id = table::toTypeId(&type_table,"int");
     int float_id = table::toTypeId(&type_table,"float");
 
-    std::vector<int> params(2);
+    std::vector<int> params;
     params.push_back(int_id);
     params.push_back(int_id);
     func_table.insert("+", params, int_id);
@@ -43,7 +43,7 @@ int main()
     
     parser::ExpressionNode e2;
     e2.type = parser::E_LITERAL;
-    e2.literal_type = parser::LIT_FLOAT;
+    e2.literal_type = parser::LIT_INT;
 
     ps.push_back(e1);
     ps.push_back(e2);
