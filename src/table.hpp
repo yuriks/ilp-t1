@@ -51,6 +51,9 @@ struct VarTable {
 
     void insert(const std::string &var_name, int type_id);
     VarEntry *lookup(const std::string &var_name);
+
+    //for debug
+    void print();
 };
 
 std::vector<int> toTypeIds(TypeTable *type_table, std::vector<std::string> type_list);

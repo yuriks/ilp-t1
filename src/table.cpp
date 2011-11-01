@@ -1,5 +1,7 @@
 #include "table.hpp"
 
+#include <iostream>
+
 namespace table
 {
 /* TypeTable */
@@ -138,6 +140,14 @@ VarEntry *VarTable::lookup(const std::string &var_name)
     }
 
     return var_entry;
+}
+
+void VarTable::print()
+{
+    for(unsigned int i = 0; i < elements.size(); i++)
+    {
+        std::cout << elements.at(i).var_name << " type: " << elements.at(i).type_id << std::endl;
+    }
 }
 
 //return -1 if the type is not defined.
