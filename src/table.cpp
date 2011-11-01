@@ -52,6 +52,16 @@ TypeEntry *TypeTable::lookup(int type_id)
     return type_entry;
 }
 
+void TypeTable::print()
+{
+    std::cout << "Types Table" << std::endl << std::endl;
+    for(auto it = elements.begin(); it != elements.end(); it++)
+    {
+        std::cout << (*it).type_name << " id: " << (*it).id << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 /* FuncTable */
 void FuncTable::insert(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id)
 {
@@ -123,7 +133,7 @@ bool FuncTable::lookup(const std::string &func_name, std::vector<int> &params_ty
 
 void FuncTable::print(TypeTable *type_table)
 {
-    std::cout << "Functions Table" << std::endl;
+    std::cout << "Functions Table" << std::endl << std::endl;
     std::map<std::string,std::vector<FuncEntry> >::iterator func_it;
     for(func_it = map_elements.begin(); func_it != map_elements.end(); func_it++)
     {
@@ -144,6 +154,7 @@ void FuncTable::print(TypeTable *type_table)
             }
         }
     }
+    std::cout << std::endl;
 }
 
 /* VarTable */
@@ -181,11 +192,12 @@ VarEntry *VarTable::lookup(const std::string &var_name)
 
 void VarTable::print(TypeTable *type_table)
 {
-    std::cout << "+-----------------------------+" << std::endl;
+    std::cout << "Variables Table" << std::endl << std::endl;
+    /*std::cout << "+-----------------------------+" << std::endl;
     std::cout << "|        Variables Table      |" << std::endl;
     std::cout << "+--------------+--------------+" << std::endl;
     std::cout << "|     Name     |     Type     |" << std::endl;
-    std::cout << "+--------------+--------------+" << std::endl;
+    std::cout << "+--------------+--------------+" << std::endl;*/
     for(unsigned int i = 0; i < elements.size(); i++)
     {
         std::string vname = elements.at(i).var_name;
@@ -193,6 +205,7 @@ void VarTable::print(TypeTable *type_table)
         
         std::cout << vname << " " << type << std::endl;
     }
+    std::cout << std::endl;
 }
 
 //return -1 if the type is not defined.

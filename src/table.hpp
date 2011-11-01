@@ -37,6 +37,8 @@ struct TypeTable {
     void insert(const std::string &type_name);
     TypeEntry *lookup(const std::string &type_name);
     TypeEntry *lookup(int type_id);
+
+    void print();
 };
 
 struct FuncTable {
