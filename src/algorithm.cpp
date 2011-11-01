@@ -26,7 +26,7 @@ int literalToTypeId(parser::LiteralType literalT)
     return -1;
 }
 
-int determineExpressionType(const parser::ExpressionNode& expNode, const table::VarTable& vVTable, const table::FuncTable& vFTable)
+int determineExpressionType(const parser::ExpressionNode& expNode, const table::VarTable& vVTable, const table::FuncTable& vFTable, const table::TypeTable& type_table)
 {
     if (expNode.type == parser::E_BINARY_OP
         || expNode.type == parser::E_UNARY_OP
@@ -34,7 +34,7 @@ int determineExpressionType(const parser::ExpressionNode& expNode, const table::
     {
         std::vector<int> vTypes;
         for (unsigned int i = 0 ; i < expNode.parameters.size() ; i++) {
-            int p = determineExpressionType(expNode.parameters[i], vVTable, vFTable);
+            int p = determineExpressionType(expNode.parameters[i], vVTable, vFTable, type_table);
             vTypes.push_back(p);
         }
 
@@ -42,7 +42,15 @@ int determineExpressionType(const parser::ExpressionNode& expNode, const table::
         if (vFTable.lookup(expNode.name, vTypes, vFres)) {
             return vFres.return_type_id;
         } else {
-            return -1;
+            std::string err("No function overload for ");
+            err.append(expNode.name);
+            err.append(" found matching operands: ");
+            for (unsigned int i = 0; i < vTypes.size(); ++i) {
+                if (i != 0)
+                    err.append(", ");
+                err.append(table::toStringFromTypeId(type_table, vTypes[i]));
+            }
+            throw std::runtime_error(err);
         }
     } else if (expNode.type == parser::E_VARIABLE) {
         const table::VarEntry* vres = vVTable.lookup(expNode.name);
@@ -65,7 +73,7 @@ void feedTables(const parser::BaseNode* node, table::TypeTable& type_table, tabl
         type_table.insert(f->type_name);
     } else if (node->type == parser::NODE_VAR_DEF) {
         auto f = static_cast<const parser::VarDefNode*>(node);
-        int exp_type = determineExpressionType(f->value, var_table, func_table);
+        int exp_type = determineExpressionType(f->value, var_table, func_table, type_table);
         var_table.insert(f->var_name, exp_type);
     } else if (node->type == parser::NODE_FUNC_DEF) {
         auto f = static_cast<const parser::FuncDefNode*>(node);
