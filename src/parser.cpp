@@ -63,6 +63,7 @@ Operators:
 
 #include <regex>
 #include <sstream>
+#include <stdexcept>
 
 namespace {
 
@@ -117,8 +118,41 @@ bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s
     return false;
 }
 
+void parseTypeDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
+    if(tokens[cur_token_index].first == T_IDENTIFIER) {
+        std::string val = tokens[cur_token_index].second;
+        ++cur_token_index;
+    }
+}
+
+void parseDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
+    if(tokens[cur_token_index].first == T_CLASS) {
+        ++cur_token_index;
+        parseTypeDeclaration(tokens, cur_token_index);
+    } else if(tokens[cur_token_index].first == T_DEF) {
+        ++cur_token_index;
+    } else if(tokens[cur_token_index].first == T_VAR) {
+        ++cur_token_index;
+    } else {
+        throw(std::runtime_error("Error: Expected type declaration, function declaration " 
+            "or variable declaration."));
+        return;
+    }
+    ++cur_token_index;
+}
+
+void parseStatement(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
+    parseDeclaration(tokens, cur_token_index);
+    if(tokens[cur_token_index].first != T_SEMICOLON) {
+        throw(std::runtime_error("Error: Expected ;"));
+    } else {
+        //remove
+    }
+}
+
 BaseNode* parse(std::vector<TokenInfo>& tokens) {
-    // TODO
+    unsigned int i = 0;
+    parseStatement(tokens, i);
     return nullptr;
 }
 
