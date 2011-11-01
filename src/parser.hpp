@@ -16,6 +16,8 @@ struct ExpressionNode;
 struct VarDefNode;
 enum TokenTypes;
 
+BaseNode* parse(std::istream& sstr);
+
 enum NodeType {
     NODE_TYPE_DEF,
     NODE_FUNC_DEF,
