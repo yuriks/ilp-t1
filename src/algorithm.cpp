@@ -25,16 +25,23 @@ int literalToTypeId(parser::LiteralType literalT)
     return -1;
 }
 
-int determineExpressionType(parser::ExpressionNode *expNode)
+int determineExpressionType(parser::ExpressionNode *expNode, table::VarTable *vVTable, table::FuncTable *vFTable)
 {
     if(expNode->type == parser::E_BINARY_OP 
         || expNode->type == parser::E_UNARY_OP 
         || expNode->type == parser::E_FUNCTION)
     {
+        std::vector<int> vTypes;
+        for(int i = 0 ; i < expNode->parameters.size() ; i++)
+        {
+
+            vTypes.push_back(determineExpressionType(&expNode->parameters[i],vVTable,vFTable));
+        }
+        vFTable->lookup(expNode->name,vTypes,expNode->type);
 
     }else if(expNode->type == parser::E_VARIABLE)
     {
-        table::VarEntry* vres = vTable->lookup(expNode->name);
+        table::VarEntry* vres = vVTable->lookup(expNode->name);
         if(vres)
         {
             return vres->type_id;
