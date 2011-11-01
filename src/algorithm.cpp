@@ -37,8 +37,13 @@ int determineExpressionType(parser::ExpressionNode *expNode, table::VarTable *vV
 
             vTypes.push_back(determineExpressionType(&expNode->parameters[i],vVTable,vFTable));
         }
-        vFTable->lookup(expNode->name,vTypes,expNode->type);
-
+        table::FuncEntry *vFres = vFTable->lookup(expNode->name,vTypes,expNode->type);
+        if(vFres)
+        {
+            return vFres->return_type_id;
+        }else{
+            return -1;
+        }
     }else if(expNode->type == parser::E_VARIABLE)
     {
         table::VarEntry* vres = vVTable->lookup(expNode->name);
