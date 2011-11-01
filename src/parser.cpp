@@ -100,7 +100,7 @@ bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s
 
         for(std::sregex_iterator it(std::begin(line), std::end(line), token_re), end_it; it != end_it; ++it) {
             auto& elem = *it;
-            for(unsigned int i = 0; i < elem.max_size(); ++i) {
+            for(unsigned int i = 1; i < elem.max_size(); ++i) {
                 if(elem[i].matched) {
                     tokens.push_back(std::make_pair((TokenTypes)i, elem[i].str()));
                     if (i == T_SEMICOLON)
