@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <utility>
+#include <memory>
 
 namespace parser {
 
@@ -20,7 +21,7 @@ enum TokenTypes;
 typedef std::pair<TokenTypes, std::string> TokenInfo;
 
 bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s);
-BaseNode* parse(std::vector<TokenInfo>& tokens);
+std::shared_ptr<BaseNode> parse(std::vector<TokenInfo>& tokens);
 
 enum NodeType {
     NODE_TYPE_DEF,
