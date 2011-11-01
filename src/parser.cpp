@@ -65,7 +65,7 @@ Operators:
 #include <sstream>
 #include <stdexcept>
 
-namespace {
+namespace parser {
 
 static const std::regex token_re(
     "\\s*(?:(class)|(def)|(var)|([a-zA-Z_]+[a-zA-Z_0-9]*)|(->)|"
@@ -83,39 +83,22 @@ enum TokenTypes {
     T_COMMA, T_EQUAL, T_NOT, T_PLUS, T_MINUS, T_MUL, T_DIV, T_MODULO
 };
 
-} // namespace
-
-namespace parser {
-
-bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s) {
+bool tokenize(std::vector<TokenInfo>& tokens, std::string& line) {
     bool parsed_statement = false;
 
-    while (s) {
-        // Feed line
-        if (line.empty()) {
-            std::string new_line;
-            std::getline(s, new_line);
-            line.append(new_line);
-            line.push_back('\n');
-        }
-
-        for(std::sregex_iterator it(std::begin(line), std::end(line), token_re), end_it; it != end_it; ++it) {
-            auto& elem = *it;
-            for(unsigned int i = 1; i < elem.max_size(); ++i) {
-                if(elem[i].matched) {
-                    tokens.push_back(std::make_pair((TokenTypes)i, elem[i].str()));
-                    if (i == T_SEMICOLON)
-                        parsed_statement = true;
-                    break;
-                }
+    for(std::sregex_iterator it(std::begin(line), std::end(line), token_re), end_it; it != end_it; ++it) {
+        auto& elem = *it;
+        for(unsigned int i = 1; i < elem.max_size(); ++i) {
+            if(elem[i].matched) {
+                tokens.push_back(std::make_pair((TokenTypes)i, elem[i].str()));
+                if (i == T_SEMICOLON)
+                    parsed_statement = true;
+                break;
             }
         }
-
-        if (parsed_statement)
-            return true;
     }
 
-    return false;
+    return parsed_statement;
 }
 
 std::shared_ptr<TypeDefNode> parseTypeDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
@@ -232,6 +215,7 @@ std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& 
 ExpressionNode parseTier0(std::vector<TokenInfo>& tokens, unsigned int& i) {
     TokenTypes ntoken = tokens[i].first;
     if (isLiteral(ntoken)) {
+        ++i;
         ExpressionNode n;
         n.type = E_LITERAL;
         n.literal_type = literalType(ntoken);
@@ -471,7 +455,6 @@ std::shared_ptr<BaseNode> parseDeclaration(std::vector<TokenInfo>& tokens, unsig
         throw std::runtime_error("Error: Expected type declaration, function declaration " 
             "or variable declaration.");
     }
-    ++cur_token_index;
 
     return n;
 }
