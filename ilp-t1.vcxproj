@@ -64,6 +64,7 @@
     <ClCompile Include="src\table.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\algorithm.hpp" />
     <ClInclude Include="src\parser.hpp" />
     <ClInclude Include="src\table.hpp" />
   </ItemGroup>
