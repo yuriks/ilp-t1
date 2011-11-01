@@ -20,7 +20,7 @@ enum TokenTypes;
 
 typedef std::pair<TokenTypes, std::string> TokenInfo;
 
-bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s);
+bool tokenize(std::vector<TokenInfo>& tokens, std::string& line);
 std::shared_ptr<BaseNode> parse(std::vector<TokenInfo>& tokens);
 
 enum NodeType {
