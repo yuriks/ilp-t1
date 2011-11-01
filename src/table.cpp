@@ -123,6 +123,27 @@ bool FuncTable::lookup(const std::string &func_name, std::vector<int> &params_ty
 
 void FuncTable::print(TypeTable *type_table)
 {
+    std::cout << "Functions Table" << std::endl;
+    std::map<std::string,std::vector<FuncEntry> >::iterator func_it;
+    for(func_it = map_elements.begin(); func_it != map_elements.end(); func_it++)
+    {
+        auto& pair = *func_it;
+        std::vector<FuncEntry> *overloads = &pair.second;
+        for(std::vector<FuncEntry>::iterator ovit = overloads->begin(); ovit != overloads->end(); ovit++)
+        {
+            std::cout << pair.first << "(";
+            std::vector<int> entry_params = (*ovit).params_types_ids;
+            for(unsigned int i = 0; i < entry_params.size(); i++)
+            {
+                std::string param_type = toStringFromTypeId(type_table, entry_params.at(i));
+                std::cout << param_type;
+                if(i == entry_params.size() - 1)
+                    std::cout << ") -> " << toStringFromTypeId(type_table,(*ovit).return_type_id) << std::endl;
+                else
+                    std::cout << ",";
+            }
+        }
+    }
 }
 
 /* VarTable */
@@ -168,7 +189,7 @@ void VarTable::print(TypeTable *type_table)
     for(unsigned int i = 0; i < elements.size(); i++)
     {
         std::string vname = elements.at(i).var_name;
-        std::string type = toStringFromType(type_table,elements.at(i).type_id);
+        std::string type = toStringFromTypeId(type_table,elements.at(i).type_id);
         
         std::cout << vname << " " << type << std::endl;
     }
@@ -191,7 +212,7 @@ std::vector<int> toTypeIds(TypeTable *type_table, std::vector<std::string> type_
     return res;
 }
 
-std::string toStringFromType(TypeTable *type_table, int type_id)
+std::string toStringFromTypeId(TypeTable *type_table, int type_id)
 {
     return type_table->lookup(type_id)->type_name;
 }

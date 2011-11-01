@@ -60,7 +60,7 @@ struct VarTable {
 
 std::vector<int> toTypeIds(TypeTable *type_table, std::vector<std::string> type_list);
 int toTypeId(TypeTable *type_table, std::string type_name);
-std::string toStringFromType(TypeTable *type_table, int type_id);
+std::string toStringFromTypeId(TypeTable *type_table, int type_id);
 
 
 } //namespace inference
