@@ -29,8 +29,8 @@ Statement = Declaration ';'
 Type = Identifier
 TypeDeclaration = 'class' Type
 
-FunctionDeclaration = 'def' Identifier '(' ParameterListDecl '->' Type
-ParameterListDecl = ')' | Type ')' | Type ',' ParameterList
+FunctionDeclaration = 'def' Identifier '(' ( ')' | ParameterListDecl ) '->' Type
+ParameterListDecl = Type ( ')' | ',' ParameterListDecl )
 
 VariableDeclaration = 'var' Identifier '=' Expression
 
