@@ -521,7 +521,7 @@ bool isLiteral(TokenTypes token) {
         token == T_BOOL_LIT;
 }
 
-LiteralType literaType(TokenTypes token) {
+LiteralType literalType(TokenTypes token) {
    LiteralType t;
 
    switch(token) {
@@ -541,7 +541,7 @@ LiteralType literaType(TokenTypes token) {
             t = LIT_BOOL;
             break;
         default:
-            //TODO handle error
+            break; //TODO handle error
     }
 
     return t;
