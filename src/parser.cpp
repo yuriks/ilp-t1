@@ -128,20 +128,26 @@ std::shared_ptr<FuncDefNode> parseFunctionDeclaration(std::vector<TokenInfo>& to
     }
     ++cur_token_index;
 
+    std::vector<ExpressionNode> ret;
     if (tokens[cur_token_index].first != T_RPAREN) {
-        do {
-            if (tokens[cur_token_index].first != T_IDENTIFIER) {
+        while (true) {
+			if (tokens[cur_token_index].first != T_IDENTIFIER) {
                 throw std::runtime_error("Error: expected type.");
             }
             fdef->param_types.push_back(tokens[cur_token_index].second);
             ++cur_token_index;
-        } while (tokens[cur_token_index++].first == T_COMMA);
-    }
 
-    if (tokens[cur_token_index].first != T_RPAREN) {
-        throw std::runtime_error("Error: expected ')' or ','.");
-    }
-    ++cur_token_index;
+            if (tokens[cur_token_index].first == T_RPAREN) {
+                ++cur_token_index;
+                break;
+            } else if (tokens[cur_token_index].first != T_COMMA) {
+                throw std::runtime_error("Error: expected , or ).");
+            }
+            ++cur_token_index;
+        }
+    } else {
+		++cur_token_index;
+	}
 
     if (tokens[cur_token_index].first != T_ARROW) {
         throw std::runtime_error("Error: expected Type, found nothing.");
@@ -158,6 +164,7 @@ std::shared_ptr<FuncDefNode> parseFunctionDeclaration(std::vector<TokenInfo>& to
 }
 
 ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i);
+ExpressionNode parseTier7(std::vector<TokenInfo>& tokens, unsigned int& i);
 
 bool isLiteral(TokenTypes token) {
     return token == T_FLOAT_LIT || token == T_INTEGER_LIT ||
@@ -204,7 +211,9 @@ std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& 
             }
             ++i;
         }
-    }
+    } else {
+		++i;
+	}
     return ret;
 }
 
@@ -224,9 +233,8 @@ ExpressionNode parseTier0(std::vector<TokenInfo>& tokens, unsigned int& i) {
         
         if(tokens[i+1].first == T_LPAREN) {
             n.type = E_FUNCTION;
-            ++i;
+            ++i; ++i;
             n.parameters = parseFunctionCallParameters(tokens, i);
-            ++i;
             return n;
         } else {
             n.type = E_VARIABLE;
@@ -265,7 +273,7 @@ ExpressionNode parseTier2(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if (ntoken == T_MUL || ntoken == T_DIV || ntoken == T_MODULO) {
         ++i;
 
-        ExpressionNode rhs = parseTier1(tokens, i);
+        ExpressionNode rhs = parseTier7(tokens, i);
 
         ExpressionNode n;
         n.type = E_BINARY_OP;
@@ -291,7 +299,7 @@ ExpressionNode parseTier3(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if (ntoken == T_PLUS || ntoken == T_MINUS) {
         ++i;
 
-        ExpressionNode rhs = parseTier2(tokens, i);
+        ExpressionNode rhs = parseTier7(tokens, i);
 
         ExpressionNode n;
         n.type = E_BINARY_OP;
@@ -315,7 +323,7 @@ ExpressionNode parseTier4(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if (ntoken == T_LT || ntoken == T_LE || ntoken == T_GT || ntoken == T_GE) {
         ++i;
 
-        ExpressionNode rhs = parseTier3(tokens, i);
+        ExpressionNode rhs = parseTier7(tokens, i);
 
         ExpressionNode n;
         n.type = E_BINARY_OP;
@@ -343,7 +351,7 @@ ExpressionNode parseTier5(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if (ntoken == T_EQ || ntoken == T_NE) {
         ++i;
 
-        ExpressionNode rhs = parseTier4(tokens, i);
+        ExpressionNode rhs = parseTier7(tokens, i);
 
         ExpressionNode n;
         n.type = E_BINARY_OP;
@@ -365,7 +373,7 @@ ExpressionNode parseTier6(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if (tokens[i].first == T_AND) {
         ++i;
 
-        ExpressionNode rhs = parseTier5(tokens, i);
+        ExpressionNode rhs = parseTier7(tokens, i);
 
         ExpressionNode n;
         n.type = E_BINARY_OP;
@@ -384,7 +392,7 @@ ExpressionNode parseTier7(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if (tokens[i].first == T_OR) {
         ++i;
 
-        ExpressionNode rhs = parseTier6(tokens, i);
+        ExpressionNode rhs = parseTier7(tokens, i);
 
         ExpressionNode n;
         n.type = E_BINARY_OP;
@@ -407,7 +415,7 @@ ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i) 
     ExpressionNode n = parseTier7(tokens, i);
 
     if (read_paren) {
-        if (tokens[i].first != T_LPAREN) {
+        if (tokens[i].first != T_RPAREN) {
             throw std::runtime_error("Error: expected ')'");
         }
         ++i;
