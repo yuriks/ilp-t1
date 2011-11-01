@@ -21,8 +21,8 @@ int main()
     type_table.insert("bool");
     type_table.insert("string");
 
-    int int_id = table::toTypeId(&type_table,"int");
-    int float_id = table::toTypeId(&type_table,"float");
+    int int_id = table::toTypeId(type_table,"int");
+    int float_id = table::toTypeId(type_table,"float");
 
     std::vector<int> params;
     params.push_back(int_id);
@@ -56,8 +56,8 @@ int main()
     e.parameters = ps;
     v.value = e;
 
-    feedTables(&v,&type_table,&var_table,&func_table);
-    var_table.print(&type_table);
+    feedTables(&v, type_table, var_table, func_table);
+    var_table.print(type_table);
 
     system("pause");
 

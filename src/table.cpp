@@ -20,39 +20,25 @@ void TypeTable::insert(const std::string &type_name)
     }
 }
 
-TypeEntry *TypeTable::lookup(const std::string &type_name)
+const TypeEntry* TypeTable::lookup(const std::string &type_name) const
 {
-    TypeEntry *type_entry = nullptr;
-
-    for(std::vector<TypeEntry>::iterator it = elements.begin(); it != elements.end(); it++)
-    {
-        if((*it).type_name == type_name)
-        {
-            type_entry = &(*it);
-            break;
+    for (auto it = elements.begin(); it != elements.end(); it++) {
+        if (it->type_name == type_name) {
+            return &*it;
         }
     }
-
-    return type_entry;
+    return nullptr;
 }
 
-TypeEntry *TypeTable::lookup(int type_id)
+const TypeEntry* TypeTable::lookup(int type_id) const
 {
-    TypeEntry *type_entry = nullptr;
-
-    for(std::vector<TypeEntry>::iterator it = elements.begin(); it != elements.end(); it++)
-    {
-        if((*it).id == type_id)
-        {
-            type_entry = &(*it);
-            break;
-        }
-    }
-
-    return type_entry;
+    if (type_id < (signed int)elements.size())
+        return &elements[type_id];
+    else
+        return nullptr;
 }
 
-void TypeTable::print()
+void TypeTable::print() const
 {
     std::cout << "Types Table" << std::endl << std::endl;
     for(auto it = elements.begin(); it != elements.end(); it++)
@@ -63,7 +49,7 @@ void TypeTable::print()
 }
 
 /* FuncTable */
-void FuncTable::insert(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id)
+void FuncTable::insert(const std::string &func_name, const std::vector<int>& params_types_ids, int return_type_id)
 {
     std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name);
     //if the function doesn't exist in the table.
@@ -76,8 +62,7 @@ void FuncTable::insert(const std::string &func_name, std::vector<int> params_typ
     }
     FuncEntry f;
      //adds a overload to the function.
-    if(lookup(func_name,params_types_ids,f) == false)
-    {
+    if (lookup(func_name, params_types_ids, f) == false) {
         std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name); //always will find the func_name.
         auto& p = *func_it;
 
@@ -85,18 +70,16 @@ void FuncTable::insert(const std::string &func_name, std::vector<int> params_typ
         f.params_types_ids = params_types_ids;
         f.return_type_id = return_type_id;
         p.second.push_back(f);
-    }
-    else
-    {
+    } else {
         //function already defined.
     }
 }
 
 //return true if found and copies the result to func_entry.
-bool FuncTable::lookup(const std::string &func_name, std::vector<int> &params_types_ids, FuncEntry &func_entry)
+bool FuncTable::lookup(const std::string &func_name, const std::vector<int>& params_types_ids, FuncEntry &func_entry) const
 {
-    std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name);
-    if(func_it == map_elements.end())
+    auto func_it = map_elements.find(func_name);
+    if (func_it == map_elements.end())
         return nullptr;
 
     std::pair<std::string,std::vector<FuncEntry> > p = *func_it;
@@ -131,16 +114,13 @@ bool FuncTable::lookup(const std::string &func_name, std::vector<int> &params_ty
     return false;
 }
 
-void FuncTable::print(TypeTable *type_table)
+void FuncTable::print(const TypeTable& type_table) const
 {
     std::cout << "Functions Table" << std::endl << std::endl;
-    std::map<std::string,std::vector<FuncEntry> >::iterator func_it;
-    for(func_it = map_elements.begin(); func_it != map_elements.end(); func_it++)
-    {
+    for (auto func_it = map_elements.begin(); func_it != map_elements.end(); func_it++) {
         auto& pair = *func_it;
-        std::vector<FuncEntry> *overloads = &pair.second;
-        for(std::vector<FuncEntry>::iterator ovit = overloads->begin(); ovit != overloads->end(); ovit++)
-        {
+        const std::vector<FuncEntry>& overloads = pair.second;
+        for (auto ovit = overloads.begin(); ovit != overloads.end(); ovit++) {
             std::cout << pair.first << "(";
             std::vector<int> entry_params = (*ovit).params_types_ids;
             for(unsigned int i = 0; i < entry_params.size(); i++)
@@ -151,6 +131,7 @@ void FuncTable::print(TypeTable *type_table)
                     std::cout << ") -> " << toStringFromTypeId(type_table,(*ovit).return_type_id) << std::endl;
                 else
                     std::cout << ",";
+
             }
         }
     }
@@ -175,22 +156,18 @@ void VarTable::insert(const std::string &var_name, int type_id)
     }
 }
 
-VarEntry *VarTable::lookup(const std::string &var_name)
+const VarEntry* VarTable::lookup(const std::string &var_name) const
 {
-    VarEntry *var_entry = nullptr;
-    for(std::vector<VarEntry>::iterator it = elements.begin(); it != elements.end(); it++)
-    {
-        if((*it).var_name == var_name)
-        {
-            var_entry = &(*it);
-            break;
+    for(auto it = elements.begin(); it != elements.end(); it++) {
+        if(it->var_name == var_name) {
+            return &*it;
         }
     }
 
-    return var_entry;
+    return nullptr;
 }
 
-void VarTable::print(TypeTable *type_table)
+void VarTable::print(const TypeTable& type_table) const
 {
     std::cout << "Variables Table" << std::endl << std::endl;
     /*std::cout << "+-----------------------------+" << std::endl;
@@ -209,25 +186,25 @@ void VarTable::print(TypeTable *type_table)
 }
 
 //return -1 if the type is not defined.
-int toTypeId(TypeTable *type_table, std::string type_name)
+int toTypeId(const TypeTable& type_table, const std::string& type_name)
 {
-    return type_table->lookup(type_name)->id;
+    return type_table.lookup(type_name)->id;
 }
+
 //return -1 for not defined types.
-std::vector<int> toTypeIds(TypeTable *type_table, std::vector<std::string> type_list)
+std::vector<int> toTypeIds(const TypeTable& type_table, const std::vector<std::string>& type_list)
 {
     std::vector<int> res;
-    for(std::vector<std::string>::iterator it = type_list.begin(); it != type_list.end(); it++)
-    {
-        res.push_back(toTypeId(type_table,*it));
+    for(auto it = type_list.begin(); it != type_list.end(); it++) {
+        res.push_back(toTypeId(type_table, *it));
     }
 
     return res;
 }
 
-std::string toStringFromTypeId(TypeTable *type_table, int type_id)
+std::string toStringFromTypeId(const TypeTable& type_table, int type_id)
 {
-    return type_table->lookup(type_id)->type_name;
+    return type_table.lookup(type_id)->type_name;
 }
 
 }//end of namespace table.
