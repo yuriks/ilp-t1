@@ -191,10 +191,6 @@ LiteralType literalType(TokenTypes token) {
     return t;
 }
 
-bool isFunctionCall(std::vector<TokenInfo>& tokens, unsigned int& i) {
-    return tokens[i].first == T_LPAREN;
-}
-
 std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& tokens, unsigned int& i) {
     std::vector<ExpressionNode> ret;
     if (tokens[i].first != T_RPAREN) {
@@ -224,9 +220,9 @@ ExpressionNode parseTier0(std::vector<TokenInfo>& tokens, unsigned int& i) {
     } else if (ntoken == T_IDENTIFIER) {
         ExpressionNode n;
         n.name = tokens[i].second;
-        ntoken = tokens[++i].first;
+        ntoken = tokens[i].first;
         
-        if(isFunctionCall(tokens, i)) {
+        if(tokens[i+1].first == T_LPAREN) {
             n.type = E_FUNCTION;
             ++i;
             n.parameters = parseFunctionCallParameters(tokens, i);
