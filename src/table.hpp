@@ -27,7 +27,7 @@ void SymbolTable::insert(const TypeEntry &type_entry)
     }
     else
     {
-        //error. TypeEntry already defined.
+        //TypeEntry already defined.
     }
 }
 
@@ -37,7 +37,7 @@ TypeEntry *SymbolTable::lookup(const std::string &name)
 
     for(std::vector<TypeEntry>::iterator it = elements.begin(); it != elements.end(); it++)
     {
-        if((*it).name.compare(name) == 0)
+        if((*it).name == name)
         {
             type_entry = &(*it);
             break;
