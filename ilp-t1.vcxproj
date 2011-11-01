@@ -61,6 +61,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\parser.cpp" />
+    <ClCompile Include="src\table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\parser.hpp" />
