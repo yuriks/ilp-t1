@@ -5,6 +5,15 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <vector>
+
+std::vector<int> makeVector(int a, int b)
+{
+    std::vector<int> v;
+    v.push_back(a);
+    v.push_back(b);
+    return v;
+}
 
 int main()
 {
@@ -17,6 +26,76 @@ int main()
     type_table.insert("char");
     type_table.insert("bool");
     type_table.insert("string");
+
+    static const int INT_T = type_table.lookup("int")->id;
+    static const int FLOAT_T = type_table.lookup("float")->id;
+    static const int BOOL_T = type_table.lookup("bool")->id;
+    
+    func_table.insert("+", makeVector(0, 0), 0);
+    func_table.insert("+", makeVector(0, 1), 1);
+    func_table.insert("+", makeVector(1, 0), 1);
+    func_table.insert("+", makeVector(1, 1), 1);
+    func_table.insert("+", makeVector(0, 0), 0);
+
+    func_table.insert("-", makeVector(0, 0), 0);
+    func_table.insert("-", makeVector(0, 1), 1);
+    func_table.insert("-", makeVector(1, 0), 1);
+    func_table.insert("-", makeVector(1, 1), 1);
+    func_table.insert("-", makeVector(0, 0), 0);
+
+    func_table.insert("*", makeVector(0, 0), 0);
+    func_table.insert("*", makeVector(0, 1), 1);
+    func_table.insert("*", makeVector(1, 0), 1);
+    func_table.insert("*", makeVector(1, 1), 1);
+    func_table.insert("*", makeVector(0, 0), 0);
+
+    func_table.insert("/", makeVector(0, 0), 0);
+    func_table.insert("/", makeVector(0, 1), 1);
+    func_table.insert("/", makeVector(1, 0), 1);
+    func_table.insert("/", makeVector(1, 1), 1);
+    func_table.insert("/", makeVector(0, 0), 0);
+
+    func_table.insert("%", makeVector(0, 0), 0);
+    func_table.insert("%", makeVector(0, 1), 1);
+    func_table.insert("%", makeVector(1, 0), 1);
+    func_table.insert("%", makeVector(1, 1), 1);
+    func_table.insert("%", makeVector(0, 0), 0);
+
+    func_table.insert("==", makeVector(0, 0), BOOL_T);
+    func_table.insert("==", makeVector(0, 1), BOOL_T);
+    func_table.insert("==", makeVector(1, 0), BOOL_T);
+    func_table.insert("==", makeVector(1, 1), BOOL_T);
+    func_table.insert("==", makeVector(0, 0), BOOL_T);
+
+    func_table.insert("!=", makeVector(0, 0), BOOL_T);
+    func_table.insert("!=", makeVector(0, 1), BOOL_T);
+    func_table.insert("!=", makeVector(1, 0), BOOL_T);
+    func_table.insert("!=", makeVector(1, 1), BOOL_T);
+    func_table.insert("!=", makeVector(0, 0), BOOL_T);
+
+    func_table.insert("<", makeVector(0, 0), BOOL_T);
+    func_table.insert("<", makeVector(0, 1), BOOL_T);
+    func_table.insert("<", makeVector(1, 0), BOOL_T);
+    func_table.insert("<", makeVector(1, 1), BOOL_T);
+    func_table.insert("<", makeVector(0, 0), BOOL_T);
+
+    func_table.insert("<=", makeVector(0, 0), BOOL_T);
+    func_table.insert("<=", makeVector(0, 1), BOOL_T);
+    func_table.insert("<=", makeVector(1, 0), BOOL_T);
+    func_table.insert("<=", makeVector(1, 1), BOOL_T);
+    func_table.insert("<=", makeVector(0, 0),BOOL_T);
+
+    func_table.insert(">", makeVector(0, 0), BOOL_T);
+    func_table.insert(">", makeVector(0, 1), BOOL_T);
+    func_table.insert(">", makeVector(1, 0), BOOL_T);
+    func_table.insert(">", makeVector(1, 1), BOOL_T);
+    func_table.insert(">", makeVector(0, 0), BOOL_T);
+
+    func_table.insert(">=", makeVector(0, 1), BOOL_T);
+    func_table.insert(">=", makeVector(0, 0), BOOL_T);
+    func_table.insert(">=", makeVector(1, 0), BOOL_T);
+    func_table.insert(">=", makeVector(1, 1), BOOL_T);
+    func_table.insert(">=", makeVector(0, 0), BOOL_T);
 
     std::string line;
     std::vector<parser::TokenInfo> tokens;
