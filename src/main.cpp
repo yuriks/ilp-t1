@@ -57,7 +57,11 @@ int main()
     v.value = e;
 
     feedTables(&v,&type_table,&var_table,&func_table);
+    
+    type_table.print();
     var_table.print(&type_table);
+    func_table.print(&type_table);
+
 
     system("pause");
 
