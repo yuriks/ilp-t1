@@ -21,7 +21,7 @@ struct SymbolTable {
 void SymbolTable::insert(const TypeEntry &type_entry)
 {
     TypeEntry *p = lookup(type_entry.name);
-    if(p == NULL)
+    if(p == nullptr)
     {
         elements.push_back(type_entry);
     }
@@ -33,7 +33,7 @@ void SymbolTable::insert(const TypeEntry &type_entry)
 
 TypeEntry *SymbolTable::lookup(const std::string &name)
 {
-    TypeEntry *type_entry = NULL;
+    TypeEntry *type_entry = nullptr;
 
     for(std::vector<TypeEntry>::iterator it = elements.begin(); it != elements.end(); it++)
     {
