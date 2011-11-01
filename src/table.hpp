@@ -43,7 +43,7 @@ struct FuncTable {
     std::vector<FuncEntry> elements;
 
     void insert(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id);
-    FuncEntry *lookup(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id);
+    FuncEntry *lookup(const std::string &func_name, std::vector<int> params_types_ids);
 };
 
 struct VarTable {

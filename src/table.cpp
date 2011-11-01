@@ -55,7 +55,7 @@ TypeEntry *TypeTable::lookup(int type_id)
 /* FuncTable */
 void FuncTable::insert(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id)
 {
-    if(lookup(func_name,params_types_ids,return_type_id) == nullptr)
+    if(lookup(func_name,params_types_ids) == nullptr)
     {
         FuncEntry f;
         f.func_name = func_name;
@@ -69,7 +69,7 @@ void FuncTable::insert(const std::string &func_name, std::vector<int> params_typ
     }
 }
 
-FuncEntry *FuncTable::lookup(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id)
+FuncEntry *FuncTable::lookup(const std::string &func_name, std::vector<int> params_types_ids)
 {
     FuncEntry *func_entry = nullptr;
 
@@ -79,12 +79,8 @@ FuncEntry *FuncTable::lookup(const std::string &func_name, std::vector<int> para
         if(f->func_name == func_name)
         {
             bool is_equal = true;
-            if(return_type_id != f->return_type_id)
-            {
-                is_equal = false;
-            }
             //verify if the param lists are the same and in the same order.
-            else if(params_types_ids.size() == f->params_types_ids.size())
+            if(params_types_ids.size() == f->params_types_ids.size())
             {
                 for(unsigned int i = 0; i < params_types_ids.size(); i++)
                 {

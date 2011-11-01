@@ -35,11 +35,12 @@ int determineExpressionType(parser::ExpressionNode *expNode, table::VarTable *vV
         std::vector<int> vTypes;
         for(int i = 0 ; i < expNode->parameters.size() ; i++)
         {
-
-            vTypes.push_back(determineExpressionType(&expNode->parameters[i],vVTable,vFTable));
+            int p = determineExpressionType(&expNode->parameters[i],vVTable,vFTable);
+            vTypes.push_back(p);
         }
-        table::FuncEntry *vFres = vFTable->lookup(expNode->name,vTypes,expNode->type);
-        if(vFres)
+        table::FuncEntry *vFres = vFTable->lookup(expNode->name,vTypes);
+
+        if(vFres != nullptr)
         {
             return vFres->return_type_id;
         }else{
