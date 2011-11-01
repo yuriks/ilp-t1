@@ -6,21 +6,21 @@
 
 namespace inference {
 
-struct Registry {
+struct TypeEntry {
     std::string name;
     parser::LiteralType type;
 };
 
 struct SymbolTable {
-    std::vector<Registry> elements;
+    std::vector<TypeEntry> elements;
 
-    void insert(const Registry &reg);
-    Registry *lookup(const std::string &name);
+    void insert(const TypeEntry &reg);
+    TypeEntry *lookup(const std::string &name);
 };
 
-void SymbolTable::insert(const Registry &reg)
+void SymbolTable::insert(const TypeEntry &reg)
 {
-    Registry *p = lookup(reg.name);
+    TypeEntry *p = lookup(reg.name);
     if(p == NULL)
     {
         elements.push_back(reg);
