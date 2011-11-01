@@ -9,7 +9,7 @@ namespace table {
 /* Type of Entries */
 struct TypeEntry {
     std::string type_name;
-    int id;
+    int type_id;
 };
 
 struct FuncEntry {

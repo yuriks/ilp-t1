@@ -9,7 +9,7 @@ void TypeTable::insert(const std::string &type_name)
     {
         TypeEntry t;
         t.type_name = type_name;
-        t.id = (int)elements.size();
+        t.type_id = (int)elements.size();
         elements.push_back(t);
     }
     else
@@ -40,7 +40,7 @@ TypeEntry *TypeTable::lookup(int type_id)
 
     for(std::vector<TypeEntry>::iterator it = elements.begin(); it != elements.end(); it++)
     {
-        if((*it).id == type_id)
+        if((*it).type_id == type_id)
         {
             type_entry = &(*it);
             break;
@@ -108,7 +108,6 @@ FuncEntry *FuncTable::lookup(const std::string &func_name, std::vector<int> para
 }
 
 /* VarTable */
-
 void VarTable::insert(const std::string &var_name, int type_id)
 {
     if(lookup(var_name) == nullptr)
