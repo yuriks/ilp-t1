@@ -86,33 +86,39 @@ enum TokenTypes {
 
 namespace parser {
 
+bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s) {
+    bool parsed_statement = false;
 
-std::vector<TokenTypes> tokenize(const std::string::const_iterator& begin, const std::string::const_iterator& end) {
-    std::vector<TokenTypes> tokens;
+    while (s) {
+        // Feed line
+        if (line.empty()) {
+            std::string new_line;
+            std::getline(s, new_line);
+            line.append(new_line);
+        }
 
-    for(std::sregex_iterator it(begin, end, token_re), end_it; it != end_it; ++it) {
-        auto elem = *it;
-        for(unsigned int i = 0; i < elem.max_size(); ++i) {
-            if(elem[i].matched) {
-                tokens.push_back((TokenTypes)i);
-                break;
+        for(std::sregex_iterator it(std::begin(line), std::end(line), token_re), end_it; it != end_it; ++it) {
+            auto& elem = *it;
+            for(unsigned int i = 0; i < elem.max_size(); ++i) {
+                if(elem[i].matched) {
+                    tokens.push_back(std::make_pair((TokenTypes)i, elem[i].str()));
+                    if (i == T_SEMICOLON)
+                        parsed_statement = true;
+                    break;
+                }
             }
         }
+
+        if (parsed_statement)
+            return true;
     }
 
-    return tokens;
+    return false;
 }
 
-std::vector<TokenTypes> tokenize(const std::string& str) {
-    return tokenize(str.begin(), str.end());
-}
-
-BaseNode* parse(std::istream& sstr) {
-    std::string line;
-    while(sstr) {
-        std::getline(sstr, line, ';');
-    }
-    return 0;
+BaseNode* parse(std::vector<TokenInfo>& tokens) {
+    // TODO
+    return nullptr;
 }
 
 } // namespace parser

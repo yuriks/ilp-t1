@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <utility>
 
 namespace parser {
 
@@ -16,7 +17,10 @@ struct ExpressionNode;
 struct VarDefNode;
 enum TokenTypes;
 
-BaseNode* parse(std::istream& sstr);
+typedef std::pair<TokenTypes, std::string> TokenInfo;
+
+bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s);
+BaseNode* parse(std::vector<TokenInfo>& tokens);
 
 enum NodeType {
     NODE_TYPE_DEF,
