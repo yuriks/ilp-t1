@@ -66,19 +66,40 @@ Operators:
 namespace {
 
 static const std::regex token_re(
-	"\\s*(?:(class)|(def)|(var)|([a-zA-Z_]+[a-zA-Z_0-9]*)|(->)|"
-	"([0-9]+\\.[0-9]*|\\.[0-9]+)|([0-9]+)|'(.)'|\"(.*)\"|(true|false)|"
-	"(<)|(<=)|(>)|(>=)|(==)|(!=)|"
-	"(&&)|(\\|\\|)|(;)|(\\()|(\\))|"
-	"(,)|(=)|(!)|(+)|(-)|(*)|(/)|(%)", std::regex::ECMAScript | std::regex::optimize);
+    "\\s*(?:(class)|(def)|(var)|([a-zA-Z_]+[a-zA-Z_0-9]*)|(->)|"
+    "([0-9]+\\.[0-9]*|\\.[0-9]+)|([0-9]+)|'(.)'|\"(.*)\"|(true|false)|"
+    "(<)|(<=)|(>)|(>=)|(==)|(!=)|"
+    "(&&)|(\\|\\|)|(;)|(\\()|(\\))|"
+    "(,)|(=)|(!)|(+)|(-)|(*)|(/)|(%)", std::regex::ECMAScript | std::regex::optimize);
 
 enum TokenTypes {
-	T_NONE = 0,
-	T_CLASS, T_DEF, T_VAR, T_IDENTIFIER, T_ARROW,
-	T_FLOAT_LIT, T_INTEGER_LIT, T_CHAR_LIT, T_STRING_LIT, T_BOOL_LIT,
-	T_LT, T_LE, T_GT, T_GE, T_EQ, T_NE,
-	T_AND, T_OR, T_SEMICOLON, T_LPAREN, T_RPAREN,
-	T_COMMA, T_EQUAL, T_NOT, T_PLUS, T_MINUS, T_MUL, T_DIV, T_MODULO
+    T_NONE = 0,
+    T_CLASS, T_DEF, T_VAR, T_IDENTIFIER, T_ARROW,
+    T_FLOAT_LIT, T_INTEGER_LIT, T_CHAR_LIT, T_STRING_LIT, T_BOOL_LIT,
+    T_LT, T_LE, T_GT, T_GE, T_EQ, T_NE,
+    T_AND, T_OR, T_SEMICOLON, T_LPAREN, T_RPAREN,
+    T_COMMA, T_EQUAL, T_NOT, T_PLUS, T_MINUS, T_MUL, T_DIV, T_MODULO
 };
+
+namespace parser {
+
+std::vector<TokenTypes> tokenize(const std::string& str) {
+    std::vector<TokenTypes> tokens;
+
+    for(std::sregex_iterator it(str.begin(), str.end(), token_re), end; it != end; ++it)
+    {
+        auto elem = *it;
+        for(unsigned int i = 0; i < elem.max_size(); ++i) {
+            if(elem[i].matched) {
+                tokens.push_back((TokenTypes)i);
+                break;
+            }
+        }
+    }
+
+    return tokens;
+}
+
+} // namespace parser
 
 } // namespace
