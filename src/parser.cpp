@@ -174,31 +174,6 @@ std::shared_ptr<FuncDefNode> parseFunctionDeclaration(std::vector<TokenInfo>& to
     return fdef;
 }
 
-/*
-std::vector<ExpressionNode> parseArguments(std::vector<TokenInfo>& tokens, unsigned int& i) {
-    std::vector<ExpressionNode> ret;
-    if (tokens[i].first == T_RPAREN) {
-        return ret;
-    } else {
-        while(true) {
-            try {
-                ExpressionNode expr = parseOneExpr(tokens, i);
-            } catch (std::runtime_error ex) {
-                //TODO
-            }
-            if (tokens[i].first == T_RPAREN) {
-                break;  
-            } else if (tokens[i].first == T_COMMA) {
-                continue;
-            } else {
-
-            }
-        }
-    }
-    return ret;
-}
-*/
-
 ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i);
 
 bool isLiteral(TokenTypes token);
@@ -414,51 +389,6 @@ ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i) 
     return n;
 }
 
-/*
-ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i) {
-    if (tokens[i].first == T_FLOAT_LIT || tokens[i].first == T_INTEGER_LIT ||
-        tokens[i].first == T_CHAR_LIT  || tokens[i].first == T_STRING_LIT  ||
-        tokens[i].first == T_BOOL_LIT ) { //tier 0 - literal
-            ExpressionNode n;
-            switch(tokens[i].first) {
-            case T_FLOAT_LIT:
-                n.literal_type = LIT_FLOAT;
-                break;
-            case T_INTEGER_LIT:
-                n.literal_type = LIT_INT;
-                break;
-            case T_CHAR_LIT:
-                n.literal_type = LIT_CHAR;
-                break;
-            case T_STRING_LIT:
-                n.literal_type = LIT_STRING;
-                break;
-            case T_BOOL_LIT:
-                n.literal_type = LIT_BOOL;
-                break;
-            }
-            n.type = E_LITERAL;
-            ++i;
-            return n;
-    } else if (tokens[i].first == T_IDENTIFIER) { // tier 0 - identifier or  function call
-        ExpressionNode n;
-        n.name = tokens[i].second;
-        ++i;
-        if (tokens[i].first == T_LPAREN) { //function call
-            n.type = E_FUNCTION;
-            try {
-                n.parameters = parseArguments(tokens, i);
-            } catch (std::runtime_error ex) {
-            }
-            return n;
-        } else {
-            n.type = E_VARIABLE; //not sure
-            return n;
-        }
-    } 
-}
-*/
-
 std::shared_ptr<VarDefNode> parseVarDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
     auto n = std::make_shared<VarDefNode>();
     n->type = NODE_VAR_DEF;
@@ -550,25 +480,6 @@ LiteralType literalType(TokenTypes token) {
 bool isFunctionCall(std::vector<TokenInfo>& tokens, unsigned int& i) {
     return tokens[i].first == T_LPAREN;
 }
-
-//std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& tokens, 
-//    unsigned int& i) {
-//    std::vector<ExpressionNode> ret;
-//    while(tokens[i].first != T_RPAREN) {
-//        TokenInfo cur_token = tokens[i];
-//        ret.push_back(parseExpression(tokens, i));
-//        if (tokens[i].first == T_COMMA) {
-//			++i;
-//			continue;
-//		} else if (tokens[i].first == T_RPAREN) {
-//			++i;
-//			break;         
-//        } else {
-//            throw std::runtime_error("Error: expected parameter declaration.");
-//        }
-//    }
-//    return ret;
-//}
 
 std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& tokens, unsigned int& i) {
     std::vector<ExpressionNode> ret;
