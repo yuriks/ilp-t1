@@ -62,6 +62,7 @@ Operators:
 #include "parser.hpp"
 
 #include <regex>
+#include <sstream>
 
 namespace {
 
@@ -81,13 +82,15 @@ enum TokenTypes {
     T_COMMA, T_EQUAL, T_NOT, T_PLUS, T_MINUS, T_MUL, T_DIV, T_MODULO
 };
 
+} // namespace
+
 namespace parser {
 
-std::vector<TokenTypes> tokenize(const std::string& str) {
+
+std::vector<TokenTypes> tokenize(const std::string::const_iterator& begin, const std::string::const_iterator& end) {
     std::vector<TokenTypes> tokens;
 
-    for(std::sregex_iterator it(str.begin(), str.end(), token_re), end; it != end; ++it)
-    {
+    for(std::sregex_iterator it(begin, end, token_re), end_it; it != end_it; ++it) {
         auto elem = *it;
         for(unsigned int i = 0; i < elem.max_size(); ++i) {
             if(elem[i].matched) {
@@ -100,6 +103,16 @@ std::vector<TokenTypes> tokenize(const std::string& str) {
     return tokens;
 }
 
-} // namespace parser
+std::vector<TokenTypes> tokenize(const std::string& str) {
+    return tokenize(str.begin(), str.end());
+}
 
-} // namespace
+BaseNode* parse(std::istream& sstr) {
+    std::string line;
+    while(sstr) {
+        std::getline(sstr, line, ';');
+    }
+    return 0;
+}
+
+} // namespace parser
