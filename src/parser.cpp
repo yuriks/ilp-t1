@@ -215,6 +215,7 @@ std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& 
 ExpressionNode parseTier0(std::vector<TokenInfo>& tokens, unsigned int& i) {
     TokenTypes ntoken = tokens[i].first;
     if (isLiteral(ntoken)) {
+        ++i;
         ExpressionNode n;
         n.type = E_LITERAL;
         n.literal_type = literalType(ntoken);
