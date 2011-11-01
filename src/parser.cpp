@@ -118,24 +118,97 @@ bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s
     return false;
 }
 
-void parseTypeDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
+TypeDefNode parseTypeDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
     if(tokens[cur_token_index].first == T_IDENTIFIER) {
-        std::string val = tokens[cur_token_index].second;
+        TypeDefNode n;
+        n.type = NODE_TYPE_DEF;
+        n.type_name = tokens[cur_token_index].second;
         ++cur_token_index;
+        return n;
+    } else {
+        throw std::runtime_error("Error: Expected identifier.");
     }
 }
 
-void parseDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
+FuncDefNode parseFunctionDefinition(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
+    if(tokens[cur_token_index].first == T_IDENTIFIER) {
+        unsigned int& i = cur_token_index;
+        FuncDefNode fdef;
+        fdef.type = NODE_FUNC_DEF;
+        fdef.func_name = tokens[cur_token_index].second;
+        ++i;
+        if(tokens[i].first == T_LPAREN) {
+            ++i;
+            if(tokens[i].first == T_RPAREN) {
+                ++i;
+                if(tokens[i].first == T_ARROW) {
+                    ++i;
+                    if(tokens[i].first == T_IDENTIFIER) {
+                        fdef.return_type = tokens[i].second;
+                    } else {
+                        throw std::runtime_error("Error: expected Type, found invalid symbol.");
+                    }
+                } else {
+                    throw std::runtime_error("Error: expected Type, found nothing.");
+                }
+            } else {
+                if(tokens[i].first == T_CLASS) {
+                    while(tokens[i].first == T_CLASS) {
+                        ++i;
+                        if(tokens[i].first == T_IDENTIFIER) {
+                            fdef.param_types.push_back(tokens[i].second);
+                            ++i;
+                            if(tokens[i].first == T_COMMA) {
+                                ++i;
+                            } else if(tokens[i].first == T_RPAREN) {
+                                ++i;
+                                break;
+                            } else {
+                                throw std::runtime_error("Error: expected parameter declaration.");
+                            }
+                        } else {
+                            throw std::runtime_error("Error: expected parameter identifier.");
+                        }
+                    }
+                } else {
+                    throw std::runtime_error("Error: expected class declaration.");
+                }
+            }
+        }
+        return fdef;
+    } else {
+        throw std::runtime_error("Error: expected identifier.");
+    }
+}
+
+VarDefNode parseVarDeclaration(std::vector<TokenInfo>& tokens, unsigned int& i) {
+    if(tokens[i].first == T_VAR) {
+        ++i;
+        VarDefNode v;
+        v.type = NODE_VAR_DEF;
+        if(tokens[i].first == T_IDENTIFIER) {
+            v.var_name = tokens[i].second;
+            ++i;
+            if(tokens[i].first == T_EQUAL) {
+                ++i;
+            }
+        }
+    }
+}
+
+BaseNode parseDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
     if(tokens[cur_token_index].first == T_CLASS) {
         ++cur_token_index;
-        parseTypeDeclaration(tokens, cur_token_index);
+        TypeDefNode n = parseTypeDeclaration(tokens, cur_token_index);
     } else if(tokens[cur_token_index].first == T_DEF) {
         ++cur_token_index;
+        FuncDefNode n = parseFunctionDefinition(tokens, cur_token_index);
     } else if(tokens[cur_token_index].first == T_VAR) {
         ++cur_token_index;
+        
     } else {
-        throw(std::runtime_error("Error: Expected type declaration, function declaration " 
-            "or variable declaration."));
+        throw std::runtime_error("Error: Expected type declaration, function declaration " 
+            "or variable declaration.");
         return;
     }
     ++cur_token_index;
@@ -144,7 +217,7 @@ void parseDeclaration(std::vector<TokenInfo>& tokens, unsigned int& cur_token_in
 void parseStatement(std::vector<TokenInfo>& tokens, unsigned int& cur_token_index) {
     parseDeclaration(tokens, cur_token_index);
     if(tokens[cur_token_index].first != T_SEMICOLON) {
-        throw(std::runtime_error("Error: Expected ;"));
+        throw std::runtime_error("Error: Expected a ;");
     } else {
         //remove
     }
