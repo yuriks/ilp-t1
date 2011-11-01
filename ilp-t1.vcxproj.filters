@@ -23,5 +23,8 @@
     <ClInclude Include="src\parser.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\table.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

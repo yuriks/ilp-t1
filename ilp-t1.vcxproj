@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\parser.hpp" />
+    <ClInclude Include="src\table.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
