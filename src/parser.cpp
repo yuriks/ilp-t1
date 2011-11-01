@@ -201,14 +201,21 @@ std::vector<ExpressionNode> parseArguments(std::vector<TokenInfo>& tokens, unsig
 
 ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i);
 
+bool isLiteral(TokenTypes token);
+LiteralType literalType(TokenTypes token);
+
 ExpressionNode parseTier0(std::vector<TokenInfo>& tokens, unsigned int& i) {
     TokenTypes ntoken = tokens[i].first;
-    /* TODO
     if (isLiteral(ntoken)) {
-        // TODO: parse literal
+        ExpressionNode n;
+        n.type = E_LITERAL;
+        n.literal_type = literalType(ntoken);
+
+       return n;
+
     } else if (ntoken == T_IDENTIFIER) {
         // TODO: parse var or function call
-    } else */ {
+    } else {
         return parseExpression(tokens, i);
     }
 }
@@ -489,6 +496,39 @@ std::shared_ptr<BaseNode> parse(std::vector<TokenInfo>& tokens) {
     std::shared_ptr<BaseNode> node = parseStatement(tokens, i);
     tokens.erase(tokens.begin(), tokens.begin()+i);
     return node;
+}
+
+bool isLiteral(TokenTypes token) {
+    return token == T_FLOAT_LIT || token == T_INTEGER_LIT ||
+        token == T_CHAR_LIT  || token == T_STRING_LIT  ||
+        token == T_BOOL_LIT;
+}
+
+LiteralType literaType(TokenTypes token)
+{
+   LiteralType t;
+
+   switch(token) {
+        case T_FLOAT_LIT:
+            t = LIT_FLOAT;
+            break;
+        case T_INTEGER_LIT:
+            t = LIT_INT;
+            break;
+        case T_CHAR_LIT:
+            t = LIT_CHAR;
+            break;
+        case T_STRING_LIT:
+            t = LIT_STRING;
+            break;
+        case T_BOOL_LIT:
+            t = LIT_BOOL;
+            break;
+        default:
+            //TODO handle error
+    }
+
+    return t;
 }
 
 } // namespace parser
