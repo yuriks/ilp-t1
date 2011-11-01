@@ -181,6 +181,37 @@ FuncDefNode parseFunctionDefinition(std::vector<TokenInfo>& tokens, unsigned int
     }
 }
 
+ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i) {
+    if(tokens[i].first == T_FLOAT_LIT || tokens[i].first == T_INTEGER_LIT ||
+        tokens[i].first == T_CHAR_LIT  || tokens[i].first == T_STRING_LIT  ||
+        tokens[i].first == T_BOOL_LIT ) { //tier 0 - literal
+            ExpressionNode n;
+            switch(tokens[i].first) {
+            case T_FLOAT_LIT:
+                n.literal_type = LIT_FLOAT;
+                break;
+            case T_INTEGER_LIT:
+                n.literal_type = LIT_INT;
+                break;
+            case T_CHAR_LIT:
+                n.literal_type = LIT_CHAR;
+                break;
+            case T_STRING_LIT:
+                n.literal_type = LIT_STRING;
+                break;
+            case T_BOOL_LIT:
+                n.literal_type = LIT_BOOL;
+                break;
+            }
+            n.type = E_LITERAL;
+            ++i;
+            parseExpression(tokens, i);
+    } else if(tokens[i].first == T_IDENTIFIER) { // tier 0 - identifier or  function call
+        ExpressionNode n;
+        
+    } 
+}
+
 VarDefNode parseVarDeclaration(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if(tokens[i].first == T_VAR) {
         ++i;
@@ -191,6 +222,13 @@ VarDefNode parseVarDeclaration(std::vector<TokenInfo>& tokens, unsigned int& i) 
             ++i;
             if(tokens[i].first == T_EQUAL) {
                 ++i;
+                try {
+                    v.value = parseExpression(tokens, i);
+                } catch (std::runtime_error ex) {
+                   throw ex;
+                }
+            } else {
+                throw std::runtime_error("Error: expected '='.");
             }
         }
     }
