@@ -69,10 +69,10 @@ namespace {
 
 static const std::regex token_re(
     "\\s*(?:(class)|(def)|(var)|([a-zA-Z_]+[a-zA-Z_0-9]*)|(->)|"
-    "([0-9]+\\.[0-9]*|\\.[0-9]+)|([0-9]+)|'(.)'|\"(.*)\"|(true|false)|"
+    "(\\d+\\.\\d*|\\.\\d+)|(\\d+)|'(.)'|\"(.*)\"|(true|false)|"
     "(<)|(<=)|(>)|(>=)|(==)|(!=)|"
     "(&&)|(\\|\\|)|(;)|(\\()|(\\))|"
-    "(,)|(=)|(!)|(+)|(-)|(*)|(/)|(%)", std::regex::ECMAScript | std::regex::optimize);
+    "(,)|(=)|(!)|(\\+)|(-)|(\\*)|(\\/)|(%))", std::regex::ECMAScript | std::regex::optimize);
 
 enum TokenTypes {
     T_NONE = 0,
