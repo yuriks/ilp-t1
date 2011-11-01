@@ -58,18 +58,27 @@ int determineExpressionType(parser::ExpressionNode *expNode, table::VarTable *vV
     {
         return literalToTypeId(expNode->literal_type);
     }
+}
+
+void feedTables(parser::BaseNode *node, table::TypeTable *type_table, table::VarTable *var_table, table::FuncTable *func_table)
+{
+    if(node->type == parser::NODE_TYPE_DEF)
+    {
+        parser::TypeDefNode *f = (parser::TypeDefNode *)node;
+        type_table->insert(f->type_name);
+    }
+    else if(node->type == parser::NODE_VAR_DEF)
+    {
+        parser::VarDefNode *f = (parser::VarDefNode *)node;
+        int exp_type = determineExpressionType(&f->value,var_table,func_table);
+        var_table->insert(f->var_name, exp_type);
  
-}
-
-void defFuncOperation(parser::FuncDefNode *func_def_node,table::FuncTable *func_table,table::TypeTable *type_table)
-{
-    func_table->insert(func_def_node->func_name,
-        table::toTypeIds(type_table, func_def_node->param_types),
-        table::toTypeId(type_table, func_def_node->return_type));
-}
-
-void defVarOperation(parser::VarDefNode *var_def_node,table::VarTable *var_table,table::TypeTable *type_table,table::FuncTable *func_table)
-{
-    int exp_type = determineExpressionType(&var_def_node->value,var_table,func_table);
-    var_table->insert(var_def_node->var_name, exp_type);
+    }
+    else if(node->type == parser::NODE_FUNC_DEF)
+    {
+        parser::FuncDefNode *f = (parser::FuncDefNode *)node;
+        func_table->insert(f->func_name,
+        table::toTypeIds(type_table, f->param_types),
+        table::toTypeId(type_table, f->return_type));
+    }
 }
