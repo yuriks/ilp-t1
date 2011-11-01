@@ -14,37 +14,37 @@ struct TypeEntry {
 struct SymbolTable {
     std::vector<TypeEntry> elements;
 
-    void insert(const TypeEntry &reg);
+    void insert(const TypeEntry &type_entry);
     TypeEntry *lookup(const std::string &name);
 };
 
-void SymbolTable::insert(const TypeEntry &reg)
+void SymbolTable::insert(const TypeEntry &type_entry)
 {
-    TypeEntry *p = lookup(reg.name);
+    TypeEntry *p = lookup(type_entry.name);
     if(p == NULL)
     {
-        elements.push_back(reg);
+        elements.push_back(type_entry);
     }
     else
     {
-        //error. registry already defined.
+        //error. TypeEntry already defined.
     }
 }
 
-Registry *SymbolTable::lookup(const std::string &name)
+TypeEntry *SymbolTable::lookup(const std::string &name)
 {
-    Registry *reg = NULL;
+    TypeEntry *type_entry = NULL;
 
-    for(std::vector<Registry>::iterator it = elements.begin(); it != elements.end(); it++)
+    for(std::vector<TypeEntry>::iterator it = elements.begin(); it != elements.end(); it++)
     {
         if((*it).name.compare(name) == 0)
         {
-            reg = &(*it);
+            type_entry = &(*it);
             break;
         }
     }
 
-    return reg;
+    return type_entry;
 }
 
 } //namespace inference
