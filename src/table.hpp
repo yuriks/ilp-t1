@@ -83,4 +83,8 @@ struct CompareTable {
     
 };
 
+
+std::vector<int> toTypeIds(TypeTable *type_table, std::vector<std::string> type_list);
+int toTypeId(TypeTable *type_table, std::string type_name);
+
 } //namespace inference

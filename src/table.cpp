@@ -1,7 +1,7 @@
 #include "table.hpp"
 
-using namespace table;
-
+namespace table
+{
 /* TypeTable */
 void TypeTable::insert(const std::string &type_name)
 {
@@ -174,3 +174,23 @@ void CompareTable::buildDefaultCompareTable()
     elements.push_back(CompareEntry(BOOL,BOOL,BOOL));
     elements.push_back(CompareEntry(STRING,STRING,STRING));
 }
+
+//return -1 if the type is not defined.
+int toTypeId(TypeTable *type_table, std::string type_name)
+{
+    return type_table->lookup(type_name)->id;
+}
+//return -1 for not defined types.
+std::vector<int> toTypeIds(TypeTable *type_table, std::vector<std::string> type_list)
+{
+    std::vector<int> res;
+    for(std::vector<std::string>::iterator it = type_list.begin(); it != type_list.end(); it++)
+    {
+        res.push_back(toTypeId(type_table,*it));
+    }
+
+    return res;
+}
+
+
+}//end of namespace table.

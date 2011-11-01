@@ -1,4 +1,5 @@
 #include "algorithm.hpp"
+#include "table.hpp"
 
 int literalToTypeId(parser::LiteralType literalT)
 {
@@ -46,4 +47,11 @@ int determineExpressionType(parser::ExpressionNode *expNode)
         return literalToTypeId(expNode->literal_type);
     }
  
+}
+
+int defOperation(parser::FuncDefNode *func_def_node,table::FuncTable *func_table,table::TypeTable *type_table)
+{
+    func_table->insert(func_def_node->func_name,
+        table::toTypeIds(type_table, func_def_node->param_types),
+        table::toTypeId(type_table, func_def_node->return_type));
 }
