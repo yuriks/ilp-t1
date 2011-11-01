@@ -31,4 +31,20 @@ void SymbolTable::insert(const Registry &reg)
     }
 }
 
+Registry *SymbolTable::lookup(const std::string &name)
+{
+    Registry *reg = NULL;
+
+    for(std::vector<Registry>::iterator it = elements.begin(); it != elements.end(); it++)
+    {
+        if((*it).name.compare(name) == 0)
+        {
+            reg = &(*it);
+            break;
+        }
+    }
+
+    return reg;
+}
+
 } //namespace inference
