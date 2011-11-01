@@ -95,6 +95,7 @@ bool tokenize(std::vector<TokenInfo>& tokens, std::string& line, std::istream& s
             std::string new_line;
             std::getline(s, new_line);
             line.append(new_line);
+            line.push_back('\n');
         }
 
         for(std::sregex_iterator it(std::begin(line), std::end(line), token_re), end_it; it != end_it; ++it) {
