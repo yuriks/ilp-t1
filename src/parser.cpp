@@ -181,6 +181,34 @@ FuncDefNode parseFunctionDefinition(std::vector<TokenInfo>& tokens, unsigned int
     }
 }
 
+ExpressionNode parseOneExpr(std::vector<TokenInfo>& tokens, unsigned int& i) {
+    ExpressionNode n;
+    return n;
+}
+
+std::vector<ExpressionNode> parseArguments(std::vector<TokenInfo>& tokens, unsigned int& i) {
+    std::vector<ExpressionNode> ret;
+    if(tokens[i].first == T_RPAREN) {
+        return ret;
+    } else {
+        while(true) {
+            try {
+                ExpressionNode expr = parseOneExpr(tokens, i);
+            } catch (std::runtime_error ex) {
+                //TODO
+            }
+            if(tokens[i].first == T_RPAREN) {
+                break;  
+            } else if(tokens[i].first == T_COMMA) {
+                continue;
+            } else {
+
+            }
+        }
+    }
+    return ret;
+}
+
 ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i) {
     if(tokens[i].first == T_FLOAT_LIT || tokens[i].first == T_INTEGER_LIT ||
         tokens[i].first == T_CHAR_LIT  || tokens[i].first == T_STRING_LIT  ||
@@ -205,10 +233,22 @@ ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i) 
             }
             n.type = E_LITERAL;
             ++i;
-            parseExpression(tokens, i);
+            return n;
     } else if(tokens[i].first == T_IDENTIFIER) { // tier 0 - identifier or  function call
         ExpressionNode n;
-        
+        n.name = tokens[i].second;
+        ++i;
+        if(tokens[i].first == T_LPAREN) { //function call
+            n.type = E_FUNCTION;
+            try {
+                n.parameters = parseArguments(tokens, i);
+            } catch (std::runtime_error ex) {
+            }
+            return n;
+        } else {
+            n.type = E_VARIABLE; //not sure
+            return n;
+        }
     } 
 }
 
