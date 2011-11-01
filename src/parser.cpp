@@ -203,6 +203,9 @@ ExpressionNode parseExpression(std::vector<TokenInfo>& tokens, unsigned int& i);
 
 bool isLiteral(TokenTypes token);
 LiteralType literalType(TokenTypes token);
+bool isFunctionCall(std::vector<TokenInfo>& tokens, unsigned int i);
+std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& tokens, 
+    unsigned int i);
 
 ExpressionNode parseTier0(std::vector<TokenInfo>& tokens, unsigned int& i) {
     TokenTypes ntoken = tokens[i].first;
@@ -212,9 +215,21 @@ ExpressionNode parseTier0(std::vector<TokenInfo>& tokens, unsigned int& i) {
         n.literal_type = literalType(ntoken);
 
        return n;
-
     } else if (ntoken == T_IDENTIFIER) {
         // TODO: parse var or function call
+        ExpressionNode n;
+        n.name = tokens[i].second;
+        ntoken = tokens[++i].first;
+        
+        if(isFunctionCall(tokens, i)) {
+            n.type = E_FUNCTION;
+            n.parameters = parseFunctionCallParameters(tokens, i);
+            ++i;
+        } else {
+            n.type = E_VARIABLE;
+            ++i;
+        }
+        
     } else {
         return parseExpression(tokens, i);
     }
@@ -529,6 +544,18 @@ LiteralType literaType(TokenTypes token)
     }
 
     return t;
+}
+
+bool isFunctionCall(std::vector<TokenInfo>& tokens, unsigned int i)
+{
+    return true;
+}
+
+std::vector<ExpressionNode> parseFunctionCallParameters(std::vector<TokenInfo>& tokens, 
+    unsigned int i)
+{
+    std::vector<ExpressionNode> ret;
+    return ret;
 }
 
 } // namespace parser
