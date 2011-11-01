@@ -140,41 +140,6 @@ VarEntry *VarTable::lookup(const std::string &var_name)
     return var_entry;
 }
 
-CompareEntry::CompareEntry(int t1, int t2, int tr)
-{
-    id_type_name1 = t1;
-    id_type_name2 = t2;
-    id_result = tr;
-}
-
-void CompareTable::insert(const int &typen1, const int &typen2, const int &typer)
-{
-    elements.push_back(CompareEntry(typen1,typen2,typer));
-}
-
-int CompareTable::lookup(const int &t1, const int &t2)
-{
-    for(int i = 0; i < elements.size(); i++)
-    {
-        if(t1 == elements[i].id_type_name1 && t2 == elements[i].id_type_name2
-            || t2 == elements[i].id_type_name1 && t1 == elements[i].id_type_name2){
-                return elements[i].id_result;
-        }
-    }
-
-    return ERROR_TYPE;
-}
-
-void CompareTable::buildDefaultCompareTable()
-{
-    elements.push_back(CompareEntry(INT,INT,INT));
-    elements.push_back(CompareEntry(INT,FLOAT,FLOAT));
-    elements.push_back(CompareEntry(FLOAT,FLOAT,FLOAT));
-    elements.push_back(CompareEntry(CHAR,CHAR,CHAR));
-    elements.push_back(CompareEntry(BOOL,BOOL,BOOL));
-    elements.push_back(CompareEntry(STRING,STRING,STRING));
-}
-
 //return -1 if the type is not defined.
 int toTypeId(TypeTable *type_table, std::string type_name)
 {

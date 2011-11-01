@@ -68,3 +68,8 @@ void defFuncOperation(parser::FuncDefNode *func_def_node,table::FuncTable *func_
         table::toTypeId(type_table, func_def_node->return_type));
 }
 
+void defVarOperation(parser::VarDefNode *var_def_node,table::VarTable *var_table,table::TypeTable *type_table,table::FuncTable *func_table)
+{
+    int exp_type = determineExpressionType(&var_def_node->value,var_table,func_table);
+    var_table->insert(var_def_node->var_name, exp_type);
+}
