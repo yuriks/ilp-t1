@@ -6,9 +6,6 @@
 #include <iostream>
 #include <string>
 
-
-
-
 int main()
 {
     table::TypeTable type_table;
@@ -21,45 +18,37 @@ int main()
     type_table.insert("bool");
     type_table.insert("string");
 
-    int int_id = table::toTypeId(type_table,"int");
-    int float_id = table::toTypeId(type_table,"float");
+    std::string line;
+    std::vector<parser::TokenInfo> tokens;
 
-    std::vector<int> params;
-    params.push_back(int_id);
-    params.push_back(int_id);
-    func_table.insert("+", params, int_id);
-    params.clear();
-    params.push_back(int_id);
-    params.push_back(float_id);
-    func_table.insert("+",params,float_id);
-
-    parser::VarDefNode v;
-    v.type = parser::NODE_VAR_DEF;
-    v.var_name = "x";
-    
-    parser::ExpressionNode e;
-    e.type = parser::E_FUNCTION;
-    e.name = "+";
-    
-    std::vector<parser::ExpressionNode> ps;
-    parser::ExpressionNode e1;
-    e1.type = parser::E_LITERAL;
-    e1.literal_type = parser::LIT_INT;
-    
-    parser::ExpressionNode e2;
-    e2.type = parser::E_LITERAL;
-    e2.literal_type = parser::LIT_INT;
-
-    ps.push_back(e1);
-    ps.push_back(e2);
-
-    e.parameters = ps;
-    v.value = e;
-
-    feedTables(&v, type_table, var_table, func_table);
-    var_table.print(type_table);
-
-    system("pause");
+    while (true) {
+        std::cout << ">>> " << std::flush;
+        std::getline(std::cin, line);
+        if (line == "!printtypes") {
+            type_table.print();
+        } else if (line == "!printfuncs") {
+            func_table.print(type_table);
+        } else if (line == "!printvars") {
+            var_table.print(type_table);
+        } else if (line == "!quit") {
+            break;
+        } else {
+            line.push_back('\n');
+            while (!parser::tokenize(tokens, line)) {
+                std::cout << "... " << std::flush;
+                std::getline(std::cin, line);
+                line.push_back('\n');
+            }
+            try {
+                auto node = parser::parse(tokens);
+                feedTables(node.get(), type_table, var_table, func_table);
+            } catch (std::runtime_error& err) {
+                std::cerr << err.what() << std::endl;
+                tokens.clear();
+                line.clear();
+            }
+        }
+    }
 
     return 0;
 }
