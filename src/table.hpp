@@ -6,45 +6,44 @@
 
 namespace inference {
 
+/* Type of Entries */
 struct TypeEntry {
-    std::string name;
-    parser::LiteralType type;
+    std::string type_name;
+    int id;
 };
 
-struct SymbolTable {
+struct FuncEntry {
+    std::string func_name;
+    std::vector<int> params_types_ids;
+    int return_type_id;
+};
+
+struct VarEntry {
+    std::string var_name;
+    int type_id;
+};
+
+/*   Tables    */
+struct TypeTable {
     std::vector<TypeEntry> elements;
 
-    void insert(const TypeEntry &type_entry);
-    TypeEntry *lookup(const std::string &name);
+    void insert(const std::string &type_name);
+    TypeEntry *lookup(const std::string &type_name);
+    TypeEntry *lookup(int type_id);
 };
 
-void SymbolTable::insert(const TypeEntry &type_entry)
-{
-    TypeEntry *p = lookup(type_entry.name);
-    if(p == nullptr)
-    {
-        elements.push_back(type_entry);
-    }
-    else
-    {
-        //TypeEntry already defined.
-    }
-}
+struct FuncTable {
+    std::vector<FuncEntry> elements;
 
-TypeEntry *SymbolTable::lookup(const std::string &name)
-{
-    TypeEntry *type_entry = nullptr;
+    void insert(const std::string &func_name, std::vector<std::string> params_types, std::string return_type);
+    FuncEntry *lookup(const std::string &func_name, std::vector<std::string> params_types, std::string return_type);
+};
 
-    for(std::vector<TypeEntry>::iterator it = elements.begin(); it != elements.end(); it++)
-    {
-        if((*it).name == name)
-        {
-            type_entry = &(*it);
-            break;
-        }
-    }
+struct VarTable {
+    std::vector<VarEntry> elements;
 
-    return type_entry;
-}
+    void insert(const std::string &var_name, const std::string &type);
+    VarEntry *lookup(const std::string &var_name);
+};
 
 } //namespace inference
