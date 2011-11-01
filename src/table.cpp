@@ -53,13 +53,26 @@ TypeEntry *TypeTable::lookup(int type_id)
 /* FuncTable */
 void FuncTable::insert(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id)
 {
+    std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name);
+    
+    //if the function doesn't exist in the table.
+    if(func_it == map_elements.end())
+    {
+        std::pair<std::string,std::vector<FuncEntry> > p;
+        p.first = func_name;
+        p.second = std::vector<FuncEntry>();
+        map_elements.insert(p);
+    }
+
+    //adds a overload to the function.
     if(lookup(func_name,params_types_ids,return_type_id) == nullptr)
     {
+        std::pair<std::string,std::vector<FuncEntry> > p = (*map_elements.find(func_name)); //always will find the func_name.
+        std::vector<FuncEntry> *overloads = &p.second;
         FuncEntry f;
-        f.func_name = func_name;
         f.params_types_ids = params_types_ids;
         f.return_type_id = return_type_id;
-        elements.push_back(f);
+        overloads->push_back(f);
     }
     else
     {
@@ -69,38 +82,40 @@ void FuncTable::insert(const std::string &func_name, std::vector<int> params_typ
 
 FuncEntry *FuncTable::lookup(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id)
 {
-    FuncEntry *func_entry = nullptr;
+    std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name);
+    if(func_it == map_elements.end())
+        return nullptr;
 
-    for(std::vector<FuncEntry>::iterator it = elements.begin(); it != elements.end(); it++)
+    std::pair<std::string,std::vector<FuncEntry> > p = (*func_it);
+    FuncEntry *func_entry = nullptr;
+    std::vector<FuncEntry> *overloads = &p.second;
+
+    for(std::vector<FuncEntry>::iterator it = overloads->begin(); it != overloads->end(); it++)
     {
         FuncEntry *f = &(*it);
-        if(f->func_name == func_name)
+        bool is_equal = true;
+        if(f->return_type_id != return_type_id)
+        {    
+            is_equal = false;
+        }
+        else if(f->params_types_ids.size() == params_types_ids.size())
         {
-            bool is_equal = true;
-            if(return_type_id != f->return_type_id)
+            for(unsigned int i = 0; i < params_types_ids.size(); i++)
             {
-                is_equal = false;
-            }
-            //verify if the param lists are the same and in the same order.
-            else if(params_types_ids.size() == f->params_types_ids.size())
-            {
-                for(unsigned int i = 0; i < params_types_ids.size(); i++)
+                if(f->params_types_ids.at(i) != params_types_ids.at(i))
                 {
-                    if(params_types_ids.at(i) != f->params_types_ids.at(i))
-                    {
-                        is_equal = false;
-                        break;
-                    }
+                    is_equal = false;
+                    break;
                 }
             }
-            else
-                is_equal = false;
+        }
+        else
+            is_equal = false;
 
-            if(is_equal)
-            {
-                func_entry = f;
-                break;
-            }
+        if(is_equal)
+        {
+            func_entry = f;
+            break;
         }
     }
 

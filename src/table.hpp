@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "parser.hpp"
 
 namespace table {
@@ -13,7 +14,6 @@ struct TypeEntry {
 };
 
 struct FuncEntry {
-    std::string func_name;
     std::vector<int> params_types_ids;
     int return_type_id;
 };
@@ -33,7 +33,7 @@ struct TypeTable {
 };
 
 struct FuncTable {
-    std::vector<FuncEntry> elements;
+    std::map<std::string,std::vector<FuncEntry>> map_elements;
 
     void insert(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id);
     FuncEntry *lookup(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id);
