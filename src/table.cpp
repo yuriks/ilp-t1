@@ -55,13 +55,26 @@ TypeEntry *TypeTable::lookup(int type_id)
 /* FuncTable */
 void FuncTable::insert(const std::string &func_name, std::vector<int> params_types_ids, int return_type_id)
 {
-    if(lookup(func_name,params_types_ids) == nullptr)
+    std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name);
+    //if the function doesn't exist in the table.
+    if(func_it == map_elements.end())
     {
+        std::pair<std::string,std::vector<FuncEntry> > p;
+        p.first = func_name;
+        p.second = std::vector<FuncEntry>();
+        map_elements.insert(p);
+    }
+    FuncEntry f;
+     //adds a overload to the function.
+    if(lookup(func_name,params_types_ids,f) == false)
+    {
+        std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name); //always will find the func_name.
+        auto& p = *func_it;
+
         FuncEntry f;
-        f.func_name = func_name;
         f.params_types_ids = params_types_ids;
         f.return_type_id = return_type_id;
-        elements.push_back(f);
+        p.second.push_back(f);
     }
     else
     {
@@ -69,40 +82,47 @@ void FuncTable::insert(const std::string &func_name, std::vector<int> params_typ
     }
 }
 
-FuncEntry *FuncTable::lookup(const std::string &func_name, std::vector<int> params_types_ids)
+//return true if found and copies the result to func_entry.
+bool FuncTable::lookup(const std::string &func_name, std::vector<int> &params_types_ids, FuncEntry &func_entry)
 {
-    FuncEntry *func_entry = nullptr;
+    std::map<std::string,std::vector<FuncEntry> >::iterator func_it = map_elements.find(func_name);
+    if(func_it == map_elements.end())
+        return nullptr;
 
-    for(std::vector<FuncEntry>::iterator it = elements.begin(); it != elements.end(); it++)
+    std::pair<std::string,std::vector<FuncEntry> > p = *func_it;
+    std::vector<FuncEntry> *overloads = &p.second;
+
+    for(std::vector<FuncEntry>::iterator it = overloads->begin(); it != overloads->end(); it++)
     {
         FuncEntry *f = &(*it);
-        if(f->func_name == func_name)
+        bool is_equal = true;
+        if(f->params_types_ids.size() == params_types_ids.size())
         {
-            bool is_equal = true;
-            //verify if the param lists are the same and in the same order.
-            if(params_types_ids.size() == f->params_types_ids.size())
+            for(unsigned int i = 0; i < params_types_ids.size(); i++)
             {
-                for(unsigned int i = 0; i < params_types_ids.size(); i++)
+                if(f->params_types_ids.at(i) != params_types_ids.at(i))
                 {
-                    if(params_types_ids.at(i) != f->params_types_ids.at(i))
-                    {
-                        is_equal = false;
-                        break;
-                    }
+                    is_equal = false;
+                    break;
                 }
-            }
-            else
-                is_equal = false;
 
-            if(is_equal)
-            {
-                func_entry = f;
-                break;
             }
+        }
+        else
+            is_equal = false;
+
+        if(is_equal)
+        {
+            func_entry = *f;
+            return true;
         }
     }
 
-    return func_entry;
+    return false;
+}
+
+void FuncTable::print(TypeTable *type_table)
+{
 }
 
 /* VarTable */
@@ -138,11 +158,19 @@ VarEntry *VarTable::lookup(const std::string &var_name)
     return var_entry;
 }
 
-void VarTable::print()
+void VarTable::print(TypeTable *type_table)
 {
+    std::cout << "+-----------------------------+" << std::endl;
+    std::cout << "|        Variables Table      |" << std::endl;
+    std::cout << "+--------------+--------------+" << std::endl;
+    std::cout << "|     Name     |     Type     |" << std::endl;
+    std::cout << "+--------------+--------------+" << std::endl;
     for(unsigned int i = 0; i < elements.size(); i++)
     {
-        std::cout << elements.at(i).var_name << " type: " << elements.at(i).type_id << std::endl;
+        std::string vname = elements.at(i).var_name;
+        std::string type = toStringFromType(type_table,elements.at(i).type_id);
+        
+        std::cout << vname << " " << type << std::endl;
     }
 }
 
@@ -163,5 +191,9 @@ std::vector<int> toTypeIds(TypeTable *type_table, std::vector<std::string> type_
     return res;
 }
 
+std::string toStringFromType(TypeTable *type_table, int type_id)
+{
+    return type_table->lookup(type_id)->type_name;
+}
 
 }//end of namespace table.

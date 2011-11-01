@@ -3,6 +3,11 @@
 #include "algorithm.hpp"
 
 #include <cstdlib>
+#include <iostream>
+#include <string>
+
+
+
 
 int main()
 {
@@ -52,7 +57,7 @@ int main()
     v.value = e;
 
     feedTables(&v,&type_table,&var_table,&func_table);
-    var_table.print();
+    var_table.print(&type_table);
 
     system("pause");
 
